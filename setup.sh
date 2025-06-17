@@ -34,15 +34,15 @@ echo ""
 # STEP 2: multiagentセッション作成（4ペイン：boss1 + worker1,2,3）
 log_info "📺 multiagentセッション作成開始 (4ペイン)..."
 
-# 最初のペイン作成
-tmux new-session -d -s multiagent -n "agents"
+# 最初のペイン作成（bashを明示指定）
+tmux new-session -d -s multiagent -n "agents" bash
 
 # 2x2グリッド作成（合計4ペイン）
-tmux split-window -h -t "multiagent:0"      # 水平分割（左右）
+tmux split-window -h -t "multiagent:0" bash      # 水平分割（左右）
 tmux select-pane -t "multiagent:0.0"
-tmux split-window -v                        # 左側を垂直分割
+tmux split-window -v bash                        # 左側を垂直分割
 tmux select-pane -t "multiagent:0.2"
-tmux split-window -v                        # 右側を垂直分割
+tmux split-window -v bash                        # 右側を垂直分割
 
 # ペインタイトル設定
 log_info "ペインタイトル設定中..."
@@ -62,9 +62,9 @@ for i in {0..3}; do
         # workers: 青色
         tmux send-keys -t "multiagent:0.$i" "export PS1='(\[\033[1;34m\]${PANE_TITLES[$i]}\[\033[0m\]) \[\033[1;32m\]\w\[\033[0m\]\$ '" C-m
     fi
-    
-    # ウェルカムメッセージ
-    tmux send-keys -t "multiagent:0.$i" "echo '=== ${PANE_TITLES[$i]} エージェント ==='" C-m
+
+    # 画面をクリア
+    tmux send-keys -t "multiagent:0.$i" "clear" C-m
 done
 
 log_success "✅ multiagentセッション作成完了"
@@ -73,12 +73,11 @@ echo ""
 # STEP 3: presidentセッション作成（1ペイン）
 log_info "👑 presidentセッション作成開始..."
 
-tmux new-session -d -s president
+tmux new-session -d -s president bash
 tmux send-keys -t president "cd $(pwd)" C-m
 tmux send-keys -t president "export PS1='(\[\033[1;35m\]PRESIDENT\[\033[0m\]) \[\033[1;32m\]\w\[\033[0m\]\$ '" C-m
-tmux send-keys -t president "echo '=== PRESIDENT セッション ==='" C-m
-tmux send-keys -t president "echo 'プロジェクト統括責任者'" C-m
-tmux send-keys -t president "echo '========================'" C-m
+# 画面をクリア
+tmux send-keys -t president "clear" C-m
 
 log_success "✅ presidentセッション作成完了"
 echo ""
