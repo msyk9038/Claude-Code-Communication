@@ -31,7 +31,7 @@ rm -f ./tmp/worker*_done.txt 2>/dev/null && log_info "既存の完了ファイ�
 log_success "✅ クリーンアップ完了"
 echo ""
 
-# STEP 2: multiagentセッション作成（4ペイン：boss1 + worker1,2,3）
+# STEP 2: multiagentセッション作成（4ペイン：boss + worker1,2,3）
 log_info "📺 multiagentセッション作成開始 (4ペイン)..."
 
 # 最初のペイン作成（bashを明示指定）
@@ -46,7 +46,7 @@ tmux split-window -v bash                        # 右側を垂直分割
 
 # ペインタイトル設定
 log_info "ペインタイトル設定中..."
-PANE_TITLES=("boss1" "worker1" "worker2" "worker3")
+PANE_TITLES=("boss" "worker1" "worker2" "worker3")
 
 for i in {0..3}; do
     tmux select-pane -t "multiagent:0.$i" -T "${PANE_TITLES[$i]}"
@@ -56,7 +56,7 @@ for i in {0..3}; do
     
     # カラープロンプト設定
     if [ $i -eq 0 ]; then
-        # boss1: 赤色
+        # boss: 赤色
         tmux send-keys -t "multiagent:0.$i" "export PS1='(\[\033[1;31m\]${PANE_TITLES[$i]}\[\033[0m\]) \[\033[1;32m\]\w\[\033[0m\]\$ '" C-m
     else
         # workers: 青色
@@ -97,7 +97,7 @@ echo ""
 # ペイン構成表示
 echo "📋 ペイン構成:"
 echo "  multiagentセッション（4ペイン）:"
-echo "    Pane 0: boss1     (チームリーダー)"
+echo "    Pane 0: boss     (チームリーダー)"
 echo "    Pane 1: worker1   (実行担当者A)"
 echo "    Pane 2: worker2   (実行担当者B)"
 echo "    Pane 3: worker3   (実行担当者C)"
@@ -107,22 +107,34 @@ echo "    Pane 0: PRESIDENT (プロジェクト統括)"
 
 echo ""
 log_success "🎉 Demo環境セットアップ完了！"
-echo ""
-echo "📋 次のステップ:"
+
+# STEP 5: PresidentとMulti-AgentでClaude Code起動
+log_info "🤖 Claude Code起動中..."
+tmux send-keys -t president "claude" C-m
+for i in {0..3}; do
+    tmux send-keys -t multiagent:0.$i "claude" C-m
+done
+log_success "✅ Claude Code起動完了"
+
+# STEP 6: 指示書を読み込ませる
+log_info "📜 指示書を読み込ませています..."
+tmux send-keys -t president "あなたはpresidentです。CLAUDE.md を読み込んでください。" 
+tmux send-keys -t multiagent:0.0 "あなたはbossです。CLAUDE.md を読み込んでください。"
+for i in {1..3}; do
+    tmux send-keys -t multiagent:0.$i "あなたはworker${i}です。CLAUDE.md を読み込んでください。"
+done
+
+sleep 2  # 少し待機してからEnterを送信
+tmux send-keys -t president Enter
+for i in {0..3}; do
+    tmux send-keys -t multiagent:0.$i Enter
+done
+log_success "✅ 指示書読み込み完了"
+
+
 echo "  1. 🔗 セッションアタッチ:"
 echo "     tmux attach-session -t multiagent   # マルチエージェント確認"
 echo "     tmux attach-session -t president    # プレジデント確認"
-echo ""
-echo "  2. 🤖 Claude Code起動:"
-echo "     # 手順1: President認証"
-echo "     tmux send-keys -t president 'claude' C-m"
-echo "     # 手順2: 認証後、multiagent一括起動"
-echo "     for i in {0..3}; do tmux send-keys -t multiagent:0.\$i 'claude' C-m; done"
-echo ""
-echo "  3. 📜 指示書確認:"
-echo "     PRESIDENT: instructions/president.md"
-echo "     boss1: instructions/boss.md"
-echo "     worker1,2,3: instructions/worker.md"
-echo "     システム構造: CLAUDE.md"
-echo ""
-echo "  4. 🎯 デモ実行: PRESIDENTに「あなたはpresidentです。指示書に従って」と入力" 
+echo "  2. セッションでタッチ:"
+echo "     Ctrl+b, d でセッションからデタッチ"
+echo "  3. 🎯 デモ実行: PRESIDENTに「中学生の統計の勉強用にstreamlit アプリを作りたい。テーマは天気。デモ用のデータも作成してほしい。」と入力" 
