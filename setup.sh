@@ -127,15 +127,15 @@ echo "    Pane 0: PRESIDENT (プロジェクト統括)"
 echo ""
 log_success "🎉 Demo環境セットアップ完了！"
 
-# STEP 5: PresidentとMulti-AgentでClaude Code起動
-log_info "🤖 Claude Code起動中..."
-tmux send-keys -t president "claude" C-m
+# STEP 5: PresidentとMulti-AgentでAmazon Q Developer起動
+log_info "🤖 Amazon Q Developer起動中..."
+tmux send-keys -t president "q" C-m
 sleep 0.5  # 少し待機してから次のコマンドを送信
 for i in {0..3}; do
-    tmux send-keys -t multiagent:0.$i "claude" C-m
+    tmux send-keys -t multiagent:0.$i "q" C-m
     sleep 0.5  # 各ペインの起動を待つ
 done
-log_success "✅ Claude Code起動完了"
+log_success "✅ Amazon Q Developer起動完了"
 
 # STEP 6: 指示書を読み込ませる
 log_info "📜 指示書を読み込ませています..."
