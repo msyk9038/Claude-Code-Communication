@@ -11,7 +11,8 @@
       "Bash(mkdir:*)",
       "Bash(then)",
       "Bash(else)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": []
   }

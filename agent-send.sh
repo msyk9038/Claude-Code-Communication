@@ -6,7 +6,7 @@
 get_agent_target() {
     case "$1" in
         "president") echo "president" ;;
-        "boss1") echo "multiagent:0.0" ;;
+        "boss") echo "multiagent:0.0" ;;
         "worker1") echo "multiagent:0.1" ;;
         "worker2") echo "multiagent:0.2" ;;
         "worker3") echo "multiagent:0.3" ;;
@@ -24,14 +24,14 @@ show_usage() {
 
 利用可能エージェント:
   president - プロジェクト統括責任者
-  boss1     - チームリーダー  
+  boss      - チームリーダー  
   worker1   - 実行担当者A
   worker2   - 実行担当者B
   worker3   - 実行担当者C
 
 使用例:
   $0 president "指示書に従って"
-  $0 boss1 "Hello World プロジェクト開始指示"
+  $0 boss "Hello World プロジェクト開始指示"
   $0 worker1 "作業完了しました"
 EOF
 }
@@ -41,7 +41,7 @@ show_agents() {
     echo "📋 利用可能なエージェント:"
     echo "=========================="
     echo "  president → president:0     (プロジェクト統括責任者)"
-    echo "  boss1     → multiagent:0.0  (チームリーダー)"
+    echo "  boss      → multiagent:0.0  (チームリーダー)"
     echo "  worker1   → multiagent:0.1  (実行担当者A)"
     echo "  worker2   → multiagent:0.2  (実行担当者B)" 
     echo "  worker3   → multiagent:0.3  (実行担当者C)"
