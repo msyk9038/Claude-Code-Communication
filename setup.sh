@@ -52,19 +52,27 @@ for i in {0..3}; do
     tmux select-pane -t "multiagent:0.$i" -T "${PANE_TITLES[$i]}"
     
     # 作業ディレクトリ設定
-    tmux send-keys -t "multiagent:0.$i" "cd $(pwd)" C-m
+    tmux send-keys -t "multiagent:0.$i" "cd $(pwd)"
+    sleep 0.2
+    tmux send-keys -t "multiagent:0.$i" Enter
+    sleep 0.1
     
     # カラープロンプト設定
     if [ $i -eq 0 ]; then
         # boss: 赤色
-        tmux send-keys -t "multiagent:0.$i" "export PS1='(\[\033[1;31m\]${PANE_TITLES[$i]}\[\033[0m\]) \[\033[1;32m\]\w\[\033[0m\]\$ '" C-m
+        tmux send-keys -t "multiagent:0.$i" "export PS1='(\[\033[1;31m\]${PANE_TITLES[$i]}\[\033[0m\]) \[\033[1;32m\]\w\[\033[0m\]\$ '"
     else
         # workers: 青色
-        tmux send-keys -t "multiagent:0.$i" "export PS1='(\[\033[1;34m\]${PANE_TITLES[$i]}\[\033[0m\]) \[\033[1;32m\]\w\[\033[0m\]\$ '" C-m
+        tmux send-keys -t "multiagent:0.$i" "export PS1='(\[\033[1;34m\]${PANE_TITLES[$i]}\[\033[0m\]) \[\033[1;32m\]\w\[\033[0m\]\$ '"
+    sleep 0.2
+    tmux send-keys -t "multiagent:0.$i" Enter
     fi
 
     # 画面をクリア
-    tmux send-keys -t "multiagent:0.$i" "clear" C-m
+    sleep 0.1
+    tmux send-keys -t "multiagent:0.$i" "clear"
+    sleep 0.2
+    tmux send-keys -t "multiagent:0.$i" Enter
 done
 
 log_success "✅ multiagentセッション作成完了"
@@ -74,10 +82,21 @@ echo ""
 log_info "👑 presidentセッション作成開始..."
 
 tmux new-session -d -s president bash
-tmux send-keys -t president "cd $(pwd)" C-m
-tmux send-keys -t president "export PS1='(\[\033[1;35m\]PRESIDENT\[\033[0m\]) \[\033[1;32m\]\w\[\033[0m\]\$ '" C-m
+sleep 0.5
+tmux send-keys -t president "cd $(pwd)"
+sleep 0.2
+tmux send-keys -t president Enter
+
+# カラープロンプト設定
+sleep 0.2
+tmux send-keys -t president "export PS1='(\[\033[1;35m\]PRESIDENT\[\033[0m\]) \[\033[1;32m\]\w\[\033[0m\]\$ '"
+sleep 0.2
+tmux send-keys -t president Enter
 # 画面をクリア
-tmux send-keys -t president "clear" C-m
+sleep 0.1
+tmux send-keys -t president "clear"
+sleep 0.2
+tmux send-keys -t president Enter
 
 log_success "✅ presidentセッション作成完了"
 echo ""
@@ -111,8 +130,10 @@ log_success "🎉 Demo環境セットアップ完了！"
 # STEP 5: PresidentとMulti-AgentでClaude Code起動
 log_info "🤖 Claude Code起動中..."
 tmux send-keys -t president "claude" C-m
+sleep 0.5  # 少し待機してから次のコマンドを送信
 for i in {0..3}; do
     tmux send-keys -t multiagent:0.$i "claude" C-m
+    sleep 0.5  # 各ペインの起動を待つ
 done
 log_success "✅ Claude Code起動完了"
 
