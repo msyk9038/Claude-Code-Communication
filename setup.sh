@@ -129,10 +129,10 @@ log_success "🎉 Demo環境セットアップ完了！"
 
 # STEP 5: PresidentとMulti-AgentでAmazon Q Developer起動
 log_info "🤖 Amazon Q Developer起動中..."
-tmux send-keys -t president "q" C-m
+tmux send-keys -t president "q chat --model claude-4-sonnet" C-m
 sleep 0.5  # 少し待機してから次のコマンドを送信
 for i in {0..3}; do
-    tmux send-keys -t multiagent:0.$i "q" C-m
+    tmux send-keys -t multiagent:0.$i "q chat --model claude-4-sonnet" C-m
     sleep 0.5  # 各ペインの起動を待つ
 done
 log_success "✅ Amazon Q Developer起動完了"
